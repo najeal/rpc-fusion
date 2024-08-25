@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package coreapi.v1;
+
+service CoreApiService {
+    rpc Ping(PingRequest) returns (PingResponse) {}
+}
+
+message PingRequest {}
+message PingResponse {}
