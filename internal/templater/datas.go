@@ -8,3 +8,9 @@ type Service struct {
 	ResponseTypes  []string
 	MethodNames    []string
 }
+
+type File struct {
+	PackageName    string
+	PackageImports map[string]struct{}
+	Services       []Service
+}

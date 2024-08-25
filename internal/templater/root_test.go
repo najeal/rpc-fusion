@@ -10,6 +10,9 @@ import (
 //go:embed test_files/exp_service.txt
 var expectedService string
 
+//go:embed test_files/exp_file_basic.txt
+var expectedFileBasic string
+
 func TestGenerateService(t *testing.T) {
 	data := Service{
 		ServiceName: "Book",
@@ -34,7 +37,21 @@ func TestGenerateService(t *testing.T) {
 			"CancelOrder(ctx context.Context, arg *connect.Request[CancelOrderRequest]) (res *connect.Response[CancelOrderResponse], err error)",
 		},
 	}
-	content, err := generateContent(data, additionalTemplate{templateName: serviceTemplate, templateContent: serviceTemplate})
+	content, err := generateContent(data, additionalTemplate{templateName: serviceTemplateName, templateContent: serviceTemplate})
 	require.NoError(t, err)
 	require.Equal(t, expectedService, string(content))
+}
+
+func TestGenerateFile(t *testing.T) {
+	data := File{
+		PackageName: "fusioner",
+		PackageImports: map[string]struct{}{
+			"github.com/najeal/rpc-fusion/gen1": {},
+			"github.com/najeal/rpc-fusion/gen2": {},
+		},
+	}
+
+	content, err := generateContent(data, additionalTemplate{templateName: fileTemplateName, templateContent: fileTemplate})
+	require.NoError(t, err)
+	require.Equal(t, expectedFileBasic, string(content))
 }

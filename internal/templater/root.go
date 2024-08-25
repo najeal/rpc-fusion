@@ -10,10 +10,14 @@ import (
 
 const (
 	serviceTemplateName = "ServiceTemplate"
+	fileTemplateName    = "FileTemplate"
 )
 
 //go:embed templates/service.template
 var serviceTemplate string
+
+//go:embed templates/file.template
+var fileTemplate string
 
 func generateContent(data interface{}, templates ...additionalTemplate) ([]byte, error) {
 	tp := template.New(templates[0].templateName)

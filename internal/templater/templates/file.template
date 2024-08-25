@@ -7,11 +7,11 @@ import (
     "fmt"
     "net/http"
     connect "connectrpc.com/connect"
-    {{-range $packageImport := .PackageImports}}
+    {{- range $packageImport, $v := .PackageImports}}
     "{{$packageImport}}"
-    {{-end}}
+    {{- end}}
 )
 
-{{-range $service := .Services}}
+{{- range $service := .Services}}
 {{include "ServiceTemplate" $service}}
-{{-end}}
+{{- end}}
