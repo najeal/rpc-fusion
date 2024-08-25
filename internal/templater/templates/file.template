@@ -4,11 +4,10 @@ package {{.PackageName}}
 
 import (
     "context"
-    "fmt"
     "net/http"
     connect "connectrpc.com/connect"
     {{- range $packageImport, $v := .PackageImports}}
-    "{{$packageImport}}"
+    {{$packageImport}}
     {{- end}}
 )
 

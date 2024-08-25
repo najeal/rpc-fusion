@@ -46,8 +46,8 @@ func TestGenerateFile(t *testing.T) {
 	data := File{
 		PackageName: "fusioner",
 		PackageImports: map[string]struct{}{
-			"github.com/najeal/rpc-fusion/gen1": {},
-			"github.com/najeal/rpc-fusion/gen2": {},
+			"\"github.com/najeal/rpc-fusion/gen1\"": {},
+			"\"github.com/najeal/rpc-fusion/gen2\"": {},
 		},
 	}
 

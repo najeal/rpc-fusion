@@ -4,7 +4,6 @@ package fusioner
 
 import (
     "context"
-    "fmt"
     "net/http"
     connect "connectrpc.com/connect"
     "github.com/najeal/rpc-fusion/gen1"
