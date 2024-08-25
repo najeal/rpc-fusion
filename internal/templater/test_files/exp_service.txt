@@ -1,0 +1,60 @@
+type BookCommonHandler interface{
+    Order(ctx context.Context, arg *connect.Request[OrderRequest], res *connect.Response[OrderResponse]) error
+    CancelOrder(ctx context.Context, arg *connect.Request[CancelOrderRequest], res *connect.Response[CancelOrderResponse]) error
+}
+
+type BookJsonrpcHandler interface{
+    Order(req *http.Request, arg *connect.Request[OrderRequest], res *connect.Response[OrderResponse]) error
+    CancelOrder(req *http.Request, arg *connect.Request[CancelOrderRequest], res *connect.Response[CancelOrderResponse]) error
+}
+
+type BookGrpcHandler interface{
+    Order(ctx context.Context, arg *connect.Request[OrderRequest]) (res *connect.Response[OrderResponse], err error)
+    CancelOrder(ctx context.Context, arg *connect.Request[CancelOrderRequest]) (res *connect.Response[CancelOrderResponse], err error)
+}
+
+func NewBookGrpcServer(commonHandler BookCommonHandler) *BookGrpcServer {
+    return &BookGrpcServer {
+        commonHandler: commonHandler,
+    }
+}
+
+type BookGrpcServer struct {
+    commonHandler CommonHandler
+}
+
+func (s *BookGrpcServer) Order(ctx context.Context, arg *connect.Request[OrderRequest]) (res *connect.Response[OrderResponse], err error) {
+    res = new(connect.Response[OrderResponse])
+    if err := s.commonHandler.Order(ctx, arg, res); err != nil {
+        return nil, err
+    }
+    return res, nil
+}
+
+func (s *BookGrpcServer) CancelOrder(ctx context.Context, arg *connect.Request[CancelOrderRequest]) (res *connect.Response[CancelOrderResponse], err error) {
+    res = new(connect.Response[CancelOrderResponse])
+    if err := s.commonHandler.CancelOrder(ctx, arg, res); err != nil {
+        return nil, err
+    }
+    return res, nil
+}
+
+func NewBookJsonrpcServer(commonHandler BookCommonHandler) *BookJsonrpcServer {
+    return &BookJsonrpcServer {
+        commonHandler: commonHandler,
+    }
+}
+
+type BookJsonrpcServer struct {
+    commonHandler CommonHandler
+}
+
+func (s *BookJsonrpcServer) Order(req *http.Request, arg *connect.Request[OrderRequest], res *connect.Response[OrderResponse]) error {
+    ctx := req.Context()
+    return s.commonHandler.Order(ctx, arg, res)
+}
+
+func (s *BookJsonrpcServer) CancelOrder(req *http.Request, arg *connect.Request[CancelOrderRequest], res *connect.Response[CancelOrderResponse]) error {
+    ctx := req.Context()
+    return s.commonHandler.CancelOrder(ctx, arg, res)
+}

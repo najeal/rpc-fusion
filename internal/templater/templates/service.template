@@ -1,0 +1,53 @@
+type {{.ServiceName}}CommonHandler interface{
+    {{- range $commonMethod := .CommonMethods}}
+    {{$commonMethod}}
+    {{- end}}
+}
+
+type {{.ServiceName}}JsonrpcHandler interface{
+    {{- range $jsonrpcMethod := .JsonrpcMethods}}
+    {{$jsonrpcMethod}}
+    {{- end}}
+}
+
+type {{.ServiceName}}GrpcHandler interface{
+    {{- range $grpcMethod := .GrpcMethods}}
+    {{$grpcMethod}}
+    {{- end}}
+}
+
+func New{{.ServiceName}}GrpcServer(commonHandler {{.ServiceName}}CommonHandler) *{{.ServiceName}}GrpcServer {
+    return &{{.ServiceName}}GrpcServer {
+        commonHandler: commonHandler,
+    }
+}
+
+type {{.ServiceName}}GrpcServer struct {
+    commonHandler CommonHandler
+}
+
+{{ range $i, $method := .GrpcMethods -}}
+func (s *{{$.ServiceName}}GrpcServer) {{$method}} {
+    res = new(connect.Response[{{index $.ResponseTypes $i}}])
+    if err := s.commonHandler.{{index $.MethodNames $i}}(ctx, arg, res); err != nil {
+        return nil, err
+    }
+    return res, nil
+}
+
+{{ end -}}
+func New{{.ServiceName}}JsonrpcServer(commonHandler {{.ServiceName}}CommonHandler) *{{.ServiceName}}JsonrpcServer {
+    return &{{.ServiceName}}JsonrpcServer {
+        commonHandler: commonHandler,
+    }
+}
+
+type {{.ServiceName}}JsonrpcServer struct {
+    commonHandler CommonHandler
+}
+{{- range $i, $method := .JsonrpcMethods }}
+
+func (s *{{$.ServiceName}}JsonrpcServer) {{$method}} {
+    ctx := req.Context()
+    return s.commonHandler.{{index $.MethodNames $i}}(ctx, arg, res)
+}{{ end }}
