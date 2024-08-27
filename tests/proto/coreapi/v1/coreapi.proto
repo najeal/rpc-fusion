@@ -4,7 +4,19 @@ package coreapi.v1;
 
 service CoreApiService {
     rpc Ping(PingRequest) returns (PingResponse) {}
+    rpc Order(OrderRequest) returns (OrderResponse) {}
+    rpc Cancel(CancelRequest) returns (CancelResponse) {}
 }
 
-message PingRequest {}
-message PingResponse {}
+message PingRequest {
+    int64 value = 1;
+}
+message PingResponse {
+    int64 value = 1;
+}
+
+message OrderRequest {}
+message OrderResponse {}
+
+message CancelRequest {}
+message CancelResponse {}
