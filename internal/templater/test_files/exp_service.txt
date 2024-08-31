@@ -20,7 +20,8 @@ func NewBookGrpcServer(commonHandler BookCommonHandler) *BookGrpcServer {
 }
 
 type BookGrpcServer struct {
-    commonHandler CommonHandler
+    commonHandler BookCommonHandler
+    UnimplementedBookGrpcServer
 }
 
 func (s *BookGrpcServer) Order(ctx context.Context, arg *connect.Request[OrderRequest]) (res *connect.Response[OrderResponse], err error) {
@@ -46,7 +47,7 @@ func NewBookJsonrpcServer(commonHandler BookCommonHandler) *BookJsonrpcServer {
 }
 
 type BookJsonrpcServer struct {
-    commonHandler CommonHandler
+    commonHandler BookCommonHandler
 }
 
 func (s *BookJsonrpcServer) Order(req *http.Request, arg *connect.Request[OrderRequest], res *connect.Response[OrderResponse]) error {

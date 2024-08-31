@@ -1,0 +1,16 @@
+func NewJsonrpc{{.ServiceName}}Client(uri string) *Jsonrpc{{.ServiceName}}Client {
+	req := hypersdkrequester.New(uri, "{{.ServiceName}}")
+	return &Jsonrpc{{.ServiceName}}Client{
+		requester: req,
+	}
+}
+
+type Jsonrpc{{.ServiceName}}Client struct {
+	requester requester.Requester
+}
+
+{{ range $i, $method := .GrpcMethods }}
+func (c *Jsonrpc{{$.ServiceName}}Client) {{$method}} {
+	return requester.Send[{{index $.ResponseTypes $i}}](ctx, c.requester, "{{index $.MethodNames $i}}", arg)
+}
+{{ end -}}

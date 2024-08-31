@@ -9,12 +9,16 @@ import (
 )
 
 const (
+	clientTemplateName  = "ClientTemplate"
 	serviceTemplateName = "ServiceTemplate"
 	fileTemplateName    = "FileTemplate"
 )
 
 //go:embed templates/service.template
 var serviceTemplate string
+
+//go:embed templates/client.template
+var clientTemplate string
 
 //go:embed templates/file.template
 var fileTemplate string
@@ -23,6 +27,7 @@ func GenerateFile(data File) ([]byte, error) {
 	return generateContent(data,
 		additionalTemplate{templateName: fileTemplateName, templateContent: fileTemplate},
 		additionalTemplate{templateName: serviceTemplateName, templateContent: serviceTemplate},
+		additionalTemplate{templateName: clientTemplateName, templateContent: clientTemplate},
 	)
 }
 

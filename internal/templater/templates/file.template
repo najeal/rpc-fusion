@@ -5,7 +5,8 @@ package {{.PackageName}}
 import (
     "context"
     "net/http"
-    connect "connectrpc.com/connect"
+    hypersdkrequester "github.com/ava-labs/hypersdk/requester"
+    "github.com/najeal/rpc-fusion/pkg/requester"
     {{- range $packageImport, $v := .PackageImports}}
     {{$packageImport}}
     {{- end}}
@@ -13,4 +14,8 @@ import (
 
 {{- range $service := .Services}}
 {{include "ServiceTemplate" $service}}
+{{- end}}
+
+{{- range $service := .Services}}
+{{include "ClientTemplate" $service}}
 {{- end}}

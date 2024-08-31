@@ -1,0 +1,19 @@
+func NewJsonrpcBookClient(uri string) *JsonrpcBookClient {
+	req := hypersdkrequester.New(uri, "Book")
+	return &JsonrpcBookClient{
+		requester: req,
+	}
+}
+
+type JsonrpcBookClient struct {
+	requester requester.Requester
+}
+
+
+func (c *JsonrpcBookClient) Order(ctx context.Context, arg *v1.OrderRequest) (res *v1.OrderResponse, err error) {
+	return requester.Send[v1.OrderResponse](ctx, c.requester, "Order", arg)
+}
+
+func (c *JsonrpcBookClient) CancelOrder(ctx context.Context, arg *v1.CancelOrderRequest) (res *v1.CancelOrderResponse, err error) {
+	return requester.Send[v1.CancelOrderResponse](ctx, c.requester, "CancelOrder", arg)
+}

@@ -23,12 +23,13 @@ func New{{.ServiceName}}GrpcServer(commonHandler {{.ServiceName}}CommonHandler) 
 }
 
 type {{.ServiceName}}GrpcServer struct {
-    commonHandler CommonHandler
+    commonHandler {{.ServiceName}}CommonHandler
+    {{.MustEmbedUnimplemented}}
 }
 
 {{ range $i, $method := .GrpcMethods -}}
 func (s *{{$.ServiceName}}GrpcServer) {{$method}} {
-    res = new(connect.Response[{{index $.ResponseTypes $i}}])
+    res = new({{index $.ResponseTypes $i}})
     if err := s.commonHandler.{{index $.MethodNames $i}}(ctx, arg, res); err != nil {
         return nil, err
     }
@@ -43,7 +44,7 @@ func New{{.ServiceName}}JsonrpcServer(commonHandler {{.ServiceName}}CommonHandle
 }
 
 type {{.ServiceName}}JsonrpcServer struct {
-    commonHandler CommonHandler
+    commonHandler {{.ServiceName}}CommonHandler
 }
 {{- range $i, $method := .JsonrpcMethods }}
 
