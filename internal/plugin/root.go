@@ -3,6 +3,7 @@ package plugin
 import (
 	"fmt"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/najeal/rpc-fusion/internal/templater"
@@ -27,7 +28,8 @@ func Run(gen *protogen.Plugin) error {
 }
 
 func writeFile(gen *protogen.Plugin, file *protogen.File, content []byte) error {
-	g := gen.NewGeneratedFile(file.GeneratedFilenamePrefix+"/fusion"+file.GeneratedFilenamePrefix+".fusion.go", file.GoImportPath)
+	fileName := strings.Split(file.GeneratedFilenamePrefix, string(filepath.Separator))[0]
+	g := gen.NewGeneratedFile(file.GeneratedFilenamePrefix+"fusion/"+fileName+".fusion.go", file.GoImportPath)
 	g.P(string(content))
 	return nil
 }
@@ -52,35 +54,54 @@ func generateFileData(gen *protogen.Plugin, file *protogen.File) templater.File 
 	return fileData
 }
 
+var methodsFormat map[string]map[string]string = map[string]map[string]string{
+	"basic": {
+		"common":        "%s(ctx context.Context, arg *%s, res *%s) error",
+		"grpc":          "%s(ctx context.Context, arg *%s) (res *%s, err error)",
+		"jsonrpc":       "%s(req *http.Request, arg *%s, res *%s) error",
+		"responsetypes": "%s",
+	},
+	"withconnect": {
+		"common":        "%s(ctx context.Context, arg *connect.Request[%s], res *connect.Response[%s]) error",
+		"grpc":          "%s(ctx context.Context, arg *connect.Request[%s]) (res *connect.Response[%s], err error)",
+		"jsonrpc":       "%s(req *http.Request, arg *connect.Request[%s], res *connect.Response[%s]) error",
+		"responsetypes": "connect.Response[%s]",
+	},
+}
+
 func getServicesData(file *protogen.File) []templater.Service {
 	svcs := []templater.Service{}
 	for _, isvc := range file.Services {
-		svc := templater.Service{}
+		svc := templater.Service{
+			ServiceName: isvc.GoName,
+		}
 		for _, method := range isvc.Methods {
+			servicePackage := path.Base(strings.TrimSuffix(file.GoImportPath.String(), "\""))
 			inputPackage := path.Base(strings.TrimSuffix(method.Input.GoIdent.GoImportPath.String(), "\""))
 			outputPackage := path.Base(strings.TrimSuffix(method.Output.GoIdent.GoImportPath.String(), "\""))
 			inputType := fmt.Sprintf("%s.%s", inputPackage, method.Input.GoIdent.GoName)
 			outputType := fmt.Sprintf("%s.%s", outputPackage, method.Output.GoIdent.GoName)
 			svc.CommonMethods = append(svc.CommonMethods,
-				fmt.Sprintf("%s(ctx context.Context, arg *connect.Request[%s], res *connect.Response[%s]) error",
+				fmt.Sprintf(methodsFormat["basic"]["common"],
 					method.GoName,
 					inputType,
 					outputType,
 				))
 			svc.GrpcMethods = append(svc.GrpcMethods,
-				fmt.Sprintf("%s(ctx context.Context, arg *connect.Request[%s]) (res *connect.Response[%s], err error)",
+				fmt.Sprintf(methodsFormat["basic"]["grpc"],
 					method.GoName,
 					inputType,
 					outputType,
 				))
 			svc.JsonrpcMethods = append(svc.JsonrpcMethods,
-				fmt.Sprintf("%s(req *http.Request, arg *connect.Request[%s], res *connect.Response[%s]) error",
+				fmt.Sprintf(methodsFormat["basic"]["jsonrpc"],
 					method.GoName,
 					inputType,
 					outputType,
 				))
 			svc.MethodNames = append(svc.MethodNames, method.GoName)
-			svc.ResponseTypes = append(svc.ResponseTypes, outputType)
+			svc.ResponseTypes = append(svc.ResponseTypes, fmt.Sprintf(methodsFormat["basic"]["responsetypes"], outputType))
+			svc.MustEmbedUnimplemented = servicePackage + ".Unimplemented" + isvc.GoName + "Server"
 		}
 		svcs = append(svcs, svc)
 	}
