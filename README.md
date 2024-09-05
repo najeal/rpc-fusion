@@ -1,6 +1,6 @@
 # Welcome to rpc-fusion
 
-rpc-fusion [buf tool](https://github.com/bufbuild/buf) plugin.
+rpc-fusion is a [buf tool](https://github.com/bufbuild/buf) plugin.
 it generates JSONRPC-Server and  GRPC-Server using a common interface.
 
 The user is free to implement the common interface and use it in both grpc and jsonrpc servers.
