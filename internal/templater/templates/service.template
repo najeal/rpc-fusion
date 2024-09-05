@@ -4,18 +4,6 @@ type {{.ServiceName}}CommonHandler interface{
     {{- end}}
 }
 
-type {{.ServiceName}}JsonrpcHandler interface{
-    {{- range $jsonrpcMethod := .JsonrpcMethods}}
-    {{$jsonrpcMethod}}
-    {{- end}}
-}
-
-type {{.ServiceName}}GrpcHandler interface{
-    {{- range $grpcMethod := .GrpcMethods}}
-    {{$grpcMethod}}
-    {{- end}}
-}
-
 func New{{.ServiceName}}GrpcServer(commonHandler {{.ServiceName}}CommonHandler) *{{.ServiceName}}GrpcServer {
     return &{{.ServiceName}}GrpcServer {
         commonHandler: commonHandler,

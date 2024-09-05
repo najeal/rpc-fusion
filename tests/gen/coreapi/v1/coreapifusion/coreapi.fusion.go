@@ -16,18 +16,6 @@ type CoreApiServiceCommonHandler interface {
 	Cancel(ctx context.Context, arg *v1.CancelRequest, res *v1.CancelResponse) error
 }
 
-type CoreApiServiceJsonrpcHandler interface {
-	Ping(req *http.Request, arg *v1.PingRequest, res *v1.PingResponse) error
-	Order(req *http.Request, arg *v1.OrderRequest, res *v1.OrderResponse) error
-	Cancel(req *http.Request, arg *v1.CancelRequest, res *v1.CancelResponse) error
-}
-
-type CoreApiServiceGrpcHandler interface {
-	Ping(ctx context.Context, arg *v1.PingRequest) (res *v1.PingResponse, err error)
-	Order(ctx context.Context, arg *v1.OrderRequest) (res *v1.OrderResponse, err error)
-	Cancel(ctx context.Context, arg *v1.CancelRequest) (res *v1.CancelResponse, err error)
-}
-
 func NewCoreApiServiceGrpcServer(commonHandler CoreApiServiceCommonHandler) *CoreApiServiceGrpcServer {
 	return &CoreApiServiceGrpcServer{
 		commonHandler: commonHandler,

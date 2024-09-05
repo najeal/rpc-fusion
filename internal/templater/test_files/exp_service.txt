@@ -3,16 +3,6 @@ type BookCommonHandler interface{
     CancelOrder(ctx context.Context, arg *connect.Request[CancelOrderRequest], res *connect.Response[CancelOrderResponse]) error
 }
 
-type BookJsonrpcHandler interface{
-    Order(req *http.Request, arg *connect.Request[OrderRequest], res *connect.Response[OrderResponse]) error
-    CancelOrder(req *http.Request, arg *connect.Request[CancelOrderRequest], res *connect.Response[CancelOrderResponse]) error
-}
-
-type BookGrpcHandler interface{
-    Order(ctx context.Context, arg *connect.Request[OrderRequest]) (res *connect.Response[OrderResponse], err error)
-    CancelOrder(ctx context.Context, arg *connect.Request[CancelOrderRequest]) (res *connect.Response[CancelOrderResponse], err error)
-}
-
 func NewBookGrpcServer(commonHandler BookCommonHandler) *BookGrpcServer {
     return &BookGrpcServer {
         commonHandler: commonHandler,
