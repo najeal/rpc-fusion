@@ -6,6 +6,7 @@ import (
 	"context"
 	"net/http"
 	hypersdkrequester "github.com/ava-labs/hypersdk/requester"
+	"github.com/gorilla/rpc/v2"
 	"github.com/najeal/rpc-fusion/pkg/requester"
 	v1 "github.com/najeal/rpc-fusion/tests/gen/coreapi/v1"
 )
@@ -14,6 +15,10 @@ type CoreApiServiceCommonHandler interface {
 	Ping(ctx context.Context, arg *v1.PingRequest, res *v1.PingResponse) error
 	Order(ctx context.Context, arg *v1.OrderRequest, res *v1.OrderResponse) error
 	Cancel(ctx context.Context, arg *v1.CancelRequest, res *v1.CancelResponse) error
+}
+
+func RegisterJsonrpcCoreApiService(server *rpc.Server, service CoreApiServiceCommonHandler) {
+	server.RegisterService(NewCoreApiServiceJsonrpcServer(service), "CoreApiService")
 }
 
 func NewCoreApiServiceGrpcServer(commonHandler CoreApiServiceCommonHandler) *CoreApiServiceGrpcServer {
