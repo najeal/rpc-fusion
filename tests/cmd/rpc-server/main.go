@@ -14,7 +14,7 @@ import (
 func main() {
 	jrpcServer := rpc.NewServer()
 	jrpcServer.RegisterCodec(json.NewCodec(), "application/json")
-	coreapiv1fusion.RegisterJsonrpcCoreApiService(jrpcServer, cmd.NewCommonServer())
+	coreapiv1fusion.RegisterJsonrpcCoreApiServiceServer(jrpcServer, cmd.NewCommonServer())
 	http.Handle("/rpc", jrpcServer)
 	log.Println("Starting server on :8083")
 	log.Fatal(http.ListenAndServe(":8083", nil))

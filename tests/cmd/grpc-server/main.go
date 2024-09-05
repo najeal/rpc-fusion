@@ -5,7 +5,6 @@ import (
 	"net"
 
 	"github.com/najeal/rpc-fusion/tests/cmd"
-	coreapiv1 "github.com/najeal/rpc-fusion/tests/gen/coreapi/v1"
 	coreapiv1fusion "github.com/najeal/rpc-fusion/tests/gen/coreapi/v1/coreapifusion"
 
 	"google.golang.org/grpc"
@@ -17,7 +16,7 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	coreapiv1.RegisterCoreApiServiceServer(s, coreapiv1fusion.NewCoreApiServiceGrpcServer(cmd.NewCommonServer()))
+	coreapiv1fusion.RegisterGrpcCoreApiServiceServer(s, cmd.NewCommonServer())
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
