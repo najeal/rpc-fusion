@@ -4,6 +4,10 @@ type {{.ServiceName}}CommonHandler interface{
     {{- end}}
 }
 
+func RegisterJsonrpc{{.ServiceName}}(server *rpc.Server, service {{.ServiceName}}CommonHandler) {
+    server.RegisterService(New{{.ServiceName}}JsonrpcServer(service), "{{.ServiceName}}")
+}
+
 func New{{.ServiceName}}GrpcServer(commonHandler {{.ServiceName}}CommonHandler) *{{.ServiceName}}GrpcServer {
     return &{{.ServiceName}}GrpcServer {
         commonHandler: commonHandler,
