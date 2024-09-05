@@ -10,7 +10,10 @@ import (
 	"google.golang.org/protobuf/compiler/protogen"
 )
 
-const packageNameSuffix = "fusion"
+const (
+	packageNameSuffix = "fusion"
+	fileExtension     = ".fusion.go"
+)
 
 func Run(gen *protogen.Plugin) error {
 	for _, f := range gen.Files {
@@ -29,23 +32,12 @@ func Run(gen *protogen.Plugin) error {
 
 func writeFile(gen *protogen.Plugin, file *protogen.File, content []byte) error {
 	fileName := strings.Split(file.GeneratedFilenamePrefix, string(filepath.Separator))[0]
-	g := gen.NewGeneratedFile(file.GeneratedFilenamePrefix+"fusion/"+fileName+".fusion.go", file.GoImportPath)
+	g := gen.NewGeneratedFile(filepath.Join(file.GeneratedFilenamePrefix+packageNameSuffix, fileName+fileExtension), file.GoImportPath)
 	g.P(string(content))
 	return nil
 }
 
-func generateTemplateDatas(files []*protogen.File) []templater.File {
-	fileDatas := []templater.File{}
-	for _, f := range files {
-		if !f.Generate {
-			continue
-		}
-		fileDatas = append(fileDatas, generateFileData(nil, f))
-	}
-	return fileDatas
-}
-
-func generateFileData(gen *protogen.Plugin, file *protogen.File) templater.File {
+func generateFileData(_ *protogen.Plugin, file *protogen.File) templater.File {
 	fileData := templater.File{
 		PackageName:    string(file.GoPackageName) + packageNameSuffix,
 		PackageImports: getRequiredGoImports(file),
