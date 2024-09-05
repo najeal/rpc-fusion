@@ -18,7 +18,8 @@ var expectedFileBasic string
 
 func TestGenerateService(t *testing.T) {
 	data := Service{
-		ServiceName: "Book",
+		ServiceName:    "Book",
+		ServicePackage: "servicepackage",
 		MethodNames: []string{
 			"Order",
 			"CancelOrder",

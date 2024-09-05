@@ -1,6 +1,7 @@
 package templater
 
 type Service struct {
+	ServicePackage         string
 	ServiceName            string
 	CommonMethods          []string
 	JsonrpcMethods         []string

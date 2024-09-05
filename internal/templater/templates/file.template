@@ -8,6 +8,7 @@ import (
     hypersdkrequester "github.com/ava-labs/hypersdk/requester"
 	"github.com/gorilla/rpc/v2"
     "github.com/najeal/rpc-fusion/pkg/requester"
+	"google.golang.org/grpc"
     {{- range $packageImport, $v := .PackageImports}}
     {{$packageImport}}
     {{- end}}

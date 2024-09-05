@@ -71,9 +71,11 @@ var methodsFormat map[string]map[string]string = map[string]map[string]string{
 
 func getServicesData(file *protogen.File) []templater.Service {
 	svcs := []templater.Service{}
+	servicePackage := path.Base(strings.TrimSuffix(file.GoImportPath.String(), "\""))
 	for _, isvc := range file.Services {
 		svc := templater.Service{
-			ServiceName: isvc.GoName,
+			ServiceName:    isvc.GoName,
+			ServicePackage: servicePackage,
 		}
 		for _, method := range isvc.Methods {
 			servicePackage := path.Base(strings.TrimSuffix(file.GoImportPath.String(), "\""))

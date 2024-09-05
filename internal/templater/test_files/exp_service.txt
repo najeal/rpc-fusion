@@ -3,7 +3,11 @@ type BookCommonHandler interface{
     CancelOrder(ctx context.Context, arg *connect.Request[CancelOrderRequest], res *connect.Response[CancelOrderResponse]) error
 }
 
-func RegisterJsonrpcBook(server *rpc.Server, service BookCommonHandler) {
+func RegisterGrpcBookServer(server *grpc.Server, service BookCommonHandler) {
+    servicepackage.RegisterBookServer(server, NewBookGrpcServer(service))
+}
+
+func RegisterJsonrpcBookServer(server *rpc.Server, service BookCommonHandler) {
     server.RegisterService(NewBookJsonrpcServer(service), "Book")
 }
 
